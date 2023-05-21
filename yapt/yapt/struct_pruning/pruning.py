@@ -1,5 +1,6 @@
 import abc
 import logging
+import pprint
 from copy import deepcopy
 from typing import Any, Callable, Dict, Iterable, List, Type, Union
 
@@ -337,7 +338,10 @@ class FixedPruneRatioPruner(StructuredPruner):
     def select_filters(
         self, module: Module, groups: List[symch.PruneGroup]
     ) -> Dict[str, List[int]]:
+        
         config = {group: self.prune_ratio for group in groups}
+        print("Config Fix Prune Ratio: ")
+        pprint.pprint(config)
         return self.get_prune_filters_from_config(module, config, l2_score_metric)
 
 

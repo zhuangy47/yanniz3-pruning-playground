@@ -1,6 +1,6 @@
 import typing as t
 from pathlib import Path
-
+import os
 import networkx as nx
 import torch
 from torch.fx import node as fxnode
@@ -130,12 +130,14 @@ class CFG(t.Mapping):
         if dot_format == "dot":
             write_dot(drawable_graph, to_file)
         else:
-            with NamedTemporaryFile("w") as tmp:
+            with NamedTemporaryFile("w", delete=False) as tmp:
                 write_dot(drawable_graph, tmp.name)
                 subprocess.run(
                     ["dot", tmp.name, f"-T{dot_format}", "-o", to_file.as_posix()],
                     check=True,
                 )
+                tmp.close()
+                os.unlink(tmp.name)
 
     def select_module_if(self, predicate: t.Callable[[Module], bool]) -> t.List[Module]:
         return [
